@@ -7,6 +7,7 @@ int main()
     CHayaiOutputter outputter;
 
     REGISTER_BENCHMARK_F(secp256k1_fixture, verify);
+    REGISTER_BENCHMARK_F(secp256k1_fixture, verify_openssl);
     REGISTER_BENCHMARK_F(ed25519_fixture, verify);
 
     chayai_console_outputter_init(&outputter);

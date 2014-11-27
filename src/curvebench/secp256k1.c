@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <secp256k1.h>
 #include <assert.h>
+#include <openssl/ecdsa.h>
+#include <openssl/obj_mac.h>
 
 typedef struct secp256k1_fixture
 {
@@ -43,5 +45,17 @@ BENCHMARK_F(secp256k1_fixture, verify, 10, 100)
     secp256k1_fixture *fix = (secp256k1_fixture*)arg;
 
     assert(secp256k1_ecdsa_verify(fix->msg, 32, fix->sig, fix->siglen, fix->pubkey, 33));
+}
+
+BENCHMARK_F(secp256k1_fixture, verify_openssl, 10, 100)
+{
+    secp256k1_fixture *fix = (secp256k1_fixture*)arg;
+
+    EC_KEY* pkey = EC_KEY_new_by_curve_name(NID_secp256k1);
+    assert(pkey != NULL);
+    const unsigned char *pubkeyptr = fix->pubkey;
+    assert(o2i_ECPublicKey(&pkey, &pubkeyptr, 33) != NULL);
+    assert(ECDSA_verify(0, fix->msg, 33, fix->sig, fix->siglen, pkey) == 1);
+    EC_KEY_free(pkey);
 }
 

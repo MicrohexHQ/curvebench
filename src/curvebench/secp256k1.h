@@ -2,5 +2,6 @@
 #define __CURVEBENCH_SECP256K1_H
 
 DECLARE_BENCHMARK_F(secp256k1_fixture, verify);
+DECLARE_BENCHMARK_F(secp256k1_fixture, verify_openssl);
 
 #endif
